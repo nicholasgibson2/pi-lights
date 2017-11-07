@@ -1,37 +1,35 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-    </style>
+    <title>pi lights</title>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-<script src="/socket.io/socket.io.js"></script>
-<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-<script>
-  $(function () {
-    var socket = io();
-    $('form').submit(function(){
-      socket.emit('chat message', $('#m').val());
-      $('#m').val('');
-      return false;
-    });
-    socket.on('chat message', function(msg){
-      $('#messages').append($('<li>').text(msg));
-    });
-  });
-</script>
+    <input type="image" src="bulb_off.png" id="nick" onclick="buttonClicked(this.id)" style="outline:none;user-drag: none; -moz-user-select: none; -webkit-user-drag: none;"/>
+    <input type="image" src="bulb_off.png" id="pascal" onclick="buttonClicked(this.id)" style="outline:none;user-drag: none; -moz-user-select: none; -webkit-user-drag: none; "/>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io();
+      function buttonClicked(id) {
+        socket.emit('light clicked', id);
+      }
+      $(function () {
+        socket.on('light switch', function(light) {
+          var pic;
+          switch(light.state) {
+            case 'on':
+                pic = 'bulb_on.png';
+                break;
+            case 'off':
+                pic = 'bulb_off.png';
+                break;
+            default:
+                pic = '';
+                console.log('invalid switch value: ' + light.state);
+          }
+          $("#"+light.name).attr('src', pic);
+        });
+      });
+    </script>
   </body>
 </html>
