@@ -1,0 +1,11 @@
+{
+  "name": "pi-lights",
+  "version": "0.0.1",
+  "description": "simple node server/client for controlling leds with raspberry pi",
+  "dependencies": {
+    "express": "^4.15.2",
+    "onoff": "^1.1.8",
+    "socket.io": "^2.0.3",
+    "socket.io-client": "^2.0.3"
+  }
+}
