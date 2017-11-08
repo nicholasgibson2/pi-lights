@@ -13,22 +13,18 @@ var Gpio = onoff.Gpio,
   nick = new Gpio(17, 'high'),
   pascal = new Gpio(27, 'high');
 
-function light_switch(msg) {
-  switch(msg) {
-    case 'nick':
-      nick.writeSync(nick.readSync() == 0 ? 1 : 0);
-      break;
-    case 'pascal':
-      pascal.writeSync(pascal.readSync() == 0 ? 1 : 0);
-      break;
-    default:
-      break;
-  } 
+var lights = {'nick':nick,'pascal':pascal};
+var states = {'on':0,'off':1};
+
+function light_switch(light) {
+  if (light.name in lights)
+    lights[light.name].writeSync(states[light.state]);
+  else
+    console.debug('undefined light: ' + JSON.stringify(light));
 }
 
-socket.on('light switch', function(msg){
-  console.debug(msg);
-  light_switch(msg)
+socket.on('light switch', function(light){
+  light_switch(light)
 });
 
 function exit() {
